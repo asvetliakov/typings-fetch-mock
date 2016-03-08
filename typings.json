@@ -1,0 +1,8 @@
+{
+  "name": "fetch-mock",
+  "main": "index.d.ts",
+  "homepage": "https://github.com/wheresrhys/fetch-mock",
+  "ambientDependencies": {
+    "whatwg-fetch": "github:DefinitelyTyped/DefinitelyTyped/whatwg-fetch/whatwg-fetch.d.ts#91d963959f52ba696d74627d92bbb32350549993"
+  }
+}
