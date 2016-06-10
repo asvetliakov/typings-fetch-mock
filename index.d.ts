@@ -30,7 +30,8 @@ interface FetchMockStatic {
     mock(matcher: MockMatcher, method?: string, response?: MockResponse | MockMatcherFunction): this;
     restore(): this;
     reset(): this;
-    reMock(): this;
+    reMock(matcher: MockMatcher, response?: MockResponse | MockResponseFunction): this;
+    reMock(matcher: MockMatcher, method?: string, response?: MockResponse | MockMatcherFunction): this;
 
     calls(matcher?: string): Array<MockCall>
     calls(): MatchedRoutes;
