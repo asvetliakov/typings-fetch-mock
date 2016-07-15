@@ -1,23 +1,31 @@
-type MockMatcherFunction = (url: string, opts: Object) => boolean;
+type MockRequest = Request | RequestInit;
+type MockMatcherFunction = (url: string, opts: MockRequest) => boolean
 type MockMatcher = string | RegExp | Function | MockMatcherFunction;
-
-type MockResponse = number | string | Object | MockResponseObject;
-
-type MockResponseFunction = (url: string, opts: Object) => MockResponse;
 
 interface MockResponseObject {
     body?: string | Object;
     status?: number;
-    headers?: {[key: string]: any};
-    throws?: boolean;
+    headers?: {[key: string]: string};
+    throws?: Object;
     sendAsJson?: boolean;
 }
 
-interface MockCallOptions {
-    [key: string]: any;
+type MockResponse = Response | Promise<Response>
+                    | number | Promise<number>
+                    | string | Promise<string>
+                    | Object | Promise<Object>
+                    | MockResponseObject | Promise<MockResponseObject>;
+
+type MockResponseFunction = (url: string, opts: MockRequest) => MockResponse;
+
+interface MockOptions {
+    name?: string;
+    method?: string;
+    matcher?: MockMatcher;
+    response?: MockResponse | MockResponseFunction;
 }
 
-type MockCall = [string, RequestInit];
+type MockCall = [string, MockRequest];
 
 interface MatchedRoutes {
     matched: Array<MockCall>;
@@ -25,21 +33,24 @@ interface MatchedRoutes {
 }
 
 interface FetchMockStatic {
-    useNonGlobalFetch(): void;
-    mock(matcher: MockMatcher, response?: MockResponse | MockResponseFunction): this;
-    mock(matcher: MockMatcher, method?: string, response?: MockResponse | MockMatcherFunction): this;
+    mock(matcher: MockMatcher, response: MockResponse | MockResponseFunction): this;
+    mock(matcher: MockMatcher, response: MockResponse | MockResponseFunction, options: MockOptions): this;
+    mock(options: MockOptions): this;
     restore(): this;
     reset(): this;
-    reMock(matcher: MockMatcher, response?: MockResponse | MockResponseFunction): this;
-    reMock(matcher: MockMatcher, method?: string, response?: MockResponse | MockMatcherFunction): this;
 
-    calls(matcher?: string): Array<MockCall>
     calls(): MatchedRoutes;
-    called(matcher?: string): boolean;
-    lastCall(matcher?: string): MockCall;
-    lastUrl(matcher?: string): string;
-    lastOptions(matcher?: string): MockCallOptions;
+    calls(matcherName?: string): Array<MockCall>;
+    called(): boolean;
+    called(matcherName?: string): boolean;
+    lastCall(): MockCall;
+    lastCall(matcherName?: string): MockCall;
+    lastUrl(): string;
+    lastUrl(matcherName?: string): string;
+    lastOptions(): MockRequest;
+    lastOptions(matcherName?: string): MockRequest;
 
+    configure(opts: Object): void;
 }
 
 declare var fetchMock: FetchMockStatic;
